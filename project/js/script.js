@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const addForm = document.querySelector('form.add');
   const movieInput = addForm.querySelector('.adding__input');
   const favoriteCheckbox = addForm.querySelector('[type=checkbox]');
-  const deleteButtons = document.querySelectorAll('.delete');
 
   function sortArr(arr) {
     arr.sort();
@@ -41,6 +40,29 @@ document.addEventListener('DOMContentLoaded', () => {
   function deleteAdv(arr) {
     arr.forEach(item => {
       item.remove();
+    });
+  }
+
+  function createMovieList(films, parent) {
+    parent.innerHTML = '';
+    sortArr(films);
+
+    films.forEach((film, i) => {
+      parent.innerHTML += `
+      <li class="promo__interactive-item">${i + 1}. ${film}
+        <div class="delete"></div>
+      </li>
+    `
+    });
+
+    const deleteButtons = document.querySelectorAll('.delete');
+    deleteButtons.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        btn.parentElement.remove();
+        movieDB.movies.splice(i, 1);
+
+        createMovieList(films, parent);
+      });
     });
   }
 
@@ -65,71 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       movieDB.movies.push(newFilm);
       sortArr(movieDB.movies);
-    }
-  });
+      createMovieList(movieDB.movies, movieList);
+    };
 
-  function createMovieList(films, parent) {
-    parent.innerHTML = '';
-    sortArr(films);
-
-    films.forEach((film, i) => {
-      parent.innerHTML += `
-      <li class="promo__interactive-item">${i + 1}. ${film}
-        <div class="delete"></div>
-      </li>
-    `
-    });
-  }
-
-  deleteButtons.forEach((btn, index) => {
-    btn.addEventListener('click', () => {
-      btn.parentElement.remove();
-      movieDB.movies.splice(index, 1);
-
-      createMovieList(films, parent);
-    });
+    event.target.reset();
   });
 
   deleteAdv(advertisingBanners);
   makeChanges();
   createMovieList(movieDB.movies, movieList);
 });
-
-
-
-// advertisingBanners.forEach(element => { element.remove() });
-
-// function refreshMovieList() {
-//   movieList.innerHTML = '';
-//   movieDB.movies.sort();
-//   movieDB.movies.forEach((film, i) => {
-//     movieList.innerHTML += `
-//     <li class="promo__interactive-item">${i + 1}. ${film}
-//       <div class="delete"></div>
-//     </li>
-//   `
-//   });
-// }
-// refreshMovieList();
-
-// addMovieButton.addEventListener('click', (event) => {
-//   if (favoriteCheckbox.checked) {
-//     console.log('Добавляем любимый фильм');
-//   }
-//   event.preventDefault();
-//   let twentyOneSymbols = movieInput.value;
-//   if (twentyOneSymbols.length > 21) {
-//     twentyOneSymbols = `${twentyOneSymbols.split('').slice(0, 21).join('')}...`;
-//   };
-//   movieDB.movies[movieDB.movies.length] = twentyOneSymbols;
-//   console.log(movieDB.movies);
-//   refreshMovieList();
-// });
-
-// deleteButtons.forEach((btn, index) => {
-//   btn.addEventListener('click', () => {
-//     btn.parentElement.remove();
-//     movieDB.movies.splice(index, 1);
-//     refreshMovieList();
-//   });
-// }); 
